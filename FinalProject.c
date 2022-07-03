@@ -1,183 +1,304 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "Type_Def.h"
 
-//creating Structure
+#define ZERO 0
+#define ONE  1
+#define TWO  2
+#define MAX  10
+
+/* creating Structure */
 typedef struct SimpleDb
 {
     U16 ID;
-	U16 year;
+    U16 year;
 
-	U16 course1_ID;
-	F32 course1_grade;
+    U16 course1_ID;
+    F32 course1_grade;
 
-	U16 course2_ID;
-	F32 course2_grade;
+    U16 course2_ID;
+    F32 course2_grade;
 
-	U16 course3_ID;
-	F32 course3_grade;
+    U16 course3_ID;
+    F32 course3_grade;
 
-    struct SimpleDb *link; //address of next.
+    struct SimpleDb *link; /*address of next*/
+} node;
 
-}node;
+//prototypes
+node* CreatSDB (node* start);
+void SDB_TakeData(node* head);
+bool SDB_IsFull (node* start);
+U8 SDB_GetUsedSize (node* start);
+bool SDB_AddEntry (node* start, U8 counter);
+node* SDB_DeleteEntry (node* start, U16 data);
 
-node* CreatSDB (U16 entries);
 
 int main()
 {
-	U16 entries;
-	
-	node* start = NULL;
+    node* start = NULL;
+    U8 counter =  ZERO;
 
-	//Taking in number of nodes in list.
-	printf("Enter number of entries: ");
-	scanf("%hu", &entries);
+    /* creating list & saving pointer of first item in start */
+    start = CreatSDB (start);
 
-	//making sure user enters a length > 0.
-	while(entries == 0)
+    /* list is full or not */
+    SDB_IsFull(start);
+
+    /* Number of entries in the database */
+    counter = SDB_GetUsedSize(start);
+
+    /* Inserting nodes */
+    SDB_AddEntry (start, counter);
+
+    return false;
+}
+
+
+
+node* CreatSDB (node* start)
+{
+    U16 entries;
+    U8 counter = ZERO;
+    node* temp;
+
+    printf("Enter number of entries: ");
+    scanf("%hu", &entries);
+
+    /* making sure user enters a number > zero */
+    while(entries == ZERO)
     {
-        printf("\nPLEASE ENTER A VALID NUMBER OF ENTRIES!");
+        printf("\nPLEASE ENTER A VALID NUMBER OF ENTRIES!\n");
         printf("Enter number of entries: ");
         scanf("%hu", &entries);
     }
 
-	//creating list.
-	CreatSDB (entries);
-	return 0;
-}
-
-
-node* CreatSDB (U16 entries)
-{
-    U8 counter = 0;
-
-    //Pointer of structure carries address of first node in LL.
-    node* start = NULL;
-
-    //temporary pointer to structure to make more nodes.
-    node* temp;
-
-    //creating first node.
+    /* first node */
     node* head = (node*)malloc(sizeof(node));
 
-
-    //terminate if no memory was reserved
+    /* if no memory was reserved */
     if(head == NULL)
     {
         printf("\nUNABLE TO ALLOCATE MEMORY!\n");
-        exit(0);
+        exit(false);
     }
 
-    //input data from user.
-    printf("\nStudent ID: ");
-    scanf("%hu", &head->ID);
+    /* taking in data */
+    SDB_TakeData(head);
 
-	printf("Student Year: ");
-	scanf("%hu", &head->year);
-
-	printf("Course 1 ID: ");
-	scanf("%hu", &head->course1_ID);
-
-	printf("Course 1 Grade: ");
-	scanf("%f", &head->course1_grade);
-
-	printf("Course 2 ID: ");
-	scanf("%hu", &head->course2_ID);
-
-	printf("Course 2 Grade: ");
-	scanf("%f", &head->course2_grade);
-
-	printf("Course 3 ID: ");
-	scanf("%hu", &head->course3_ID);
-
-	printf("Course 3 Grade: ");
-	scanf("%f", &head->course3_grade);
-
-
-    //making start pointer contain address of first node.
     start = head;
-
-    //making pointer of first node points to NULL. i.e is the last node in the list.
     head->link = NULL;
 
-    //creating n-1 numbers of nodes as read from user using temp.
-    //for loop will start from 2nd node because we already made 1st one.
-    for (counter = 2; counter <= entries; ++counter)
+    /* creating n-1 numbers of nodes as read from user using temp.
+    for loop will start from 2nd node because we already made 1st ONE.*/
+    for (counter = TWO; counter <= entries; ++counter)
     {
-        //creating new node
+        /* new node */
         temp = (node*)malloc(sizeof(node));
 
-        //make sure new node is allocated in memory
+        /* list is empty */
         if (temp == NULL)
         {
             printf("\nUnable to allocate memory");
             break;
         }
+        /* Take Data */
+        SDB_TakeData(temp);
 
-       //input data from user.
-        printf("\nStudent ID: ");
-        scanf("%hu", &head->ID);
-
-        printf("Student Year: ");
-        scanf("%hu", &head->year);
-
-        printf("Course 1 ID: ");
-        scanf("%hu", &head->course1_ID);
-
-        printf("Course 1 Grade: ");
-        scanf("%f", &head->course1_grade);
-
-        printf("Course 2 ID: ");
-        scanf("%hu", &head->course2_ID);
-
-        printf("Course 2 Grade: ");
-        scanf("%f", &head->course2_grade);
-
-        printf("Course 3 ID: ");
-        scanf("%hu", &head->course3_ID);
-
-        printf("Course 3 Grade: ");
-        scanf("%f", &head->course3_grade);
-
-
-        //making new node point to NULL.
         temp->link = NULL;
-
-        //linking old node to new node.
         head->link = temp;
-
-        //moving head naming from old node to current node.
         head = head->link;
-        //head = temp;
     }
-    //to prevent volatile action when scope ends and keep address saved in start.
     return start;
 }
 
-//input data from user.
-void DataEntery(void)
+/* Taking Data from user */
+void SDB_TakeData (node* head)
 {
- printf("\nStudent ID: ");
- scanf("%hu", &head->ID);
+    printf("\nStudent ID: ");
+    scanf("%hu", &head->ID);
 
- printf("Student Year: ");	
- scanf("%hu", &head->year);
+    printf("Student Year: ");
+    scanf("%hu", &head->year);
 
- printf("Course 1 ID: ");
- scanf("%hu", &head->course1_ID);
+    printf("Course 1 ID: ");
+    scanf("%hu", &head->course1_ID);
 
- printf("Course 1 Grade: ");
- scanf("%f", &head->course1_grade);
+    printf("Course 1 Grade: ");
+    scanf("%f", &head->course1_grade);
 
- printf("Course 2 ID: ");
- scanf("%hu", &head->course2_ID);
+    printf("Course 2 ID: ");
+    scanf("%hu", &head->course2_ID);
 
- printf("Course 2 Grade: ");
- scanf("%f", &head->course2_grade);
+    printf("Course 2 Grade: ");
+    scanf("%f", &head->course2_grade);
 
- printf("Course 3 ID: ");
- scanf("%hu", &head->course3_ID);
+    printf("Course 3 ID: ");
+    scanf("%hu", &head->course3_ID);
 
- printf("Course 3 Grade: ");
- scanf("%f", &head->course3_grade);
+    printf("Course 3 Grade: ");
+    scanf("%f", &head->course3_grade);
+}
+
+/* checking if full list */
+bool SDB_IsFull (node* start)
+{
+    node* mover = start;
+    U8 counter = ONE;
+
+    /* returning false in case empty list */
+    if (mover == NULL)
+    {
+        printf("\nLIST IS EMPTY!\n");
+        return false;
+    }
+
+    /* counting number of entries */
+    while (mover->link != NULL)
+    {
+        mover = mover->link;
+        counter ++;
+    }
+
+    /* if list is full */
+    if (counter == MAX)
+    {
+        printf("\nLIST IS FULL!\n");
+        return true;
+    }
+
+    /* if list not full */
+    else
+    {
+        printf("\nLIST IS NOT FULL!\n");
+        return false;
+    }
+}
+
+/**check if wanted to be as same as in the pdf**/
+/* Size of current list */
+U8 SDB_GetUsedSize (node* start)
+{
+    U8 counter = ONE;
+    node* mover = start;
+
+    if (mover == NULL)
+    {
+        printf("\nLIST IS EMPTY!");
+        return false;
+    }
+
+    while (mover->link != NULL)
+    {
+        mover = mover->link;
+        counter ++;
+    }
+
+    printf("\nCurrent number of entries in the data base is: %d\n", counter);
+    printf("\nNumber of entries left is: %d\n", MAX-counter);
+    return counter;
+}
+
+/**check if wanted to be as same as in the pdf**/
+/* Inserting new entry */
+bool SDB_AddEntry (node* start, U8 counter)
+{
+
+    U8 choice = ZERO;
+
+    /* checking if there's a free space */
+    if (counter != MAX)
+    {
+        printf("\nDo you want to add a new entry (1/0) ?: ");
+        scanf("%d", &choice);
+
+        /* user enters valid choice */
+        while (choice != ONE && choice != ZERO)
+        {
+            printf("\n PLEASE ENTER A VALID CHOICE!\n");
+            printf("\nDo you want to add a new entry (1/0) ?: ");
+            scanf("%d", &choice);
+        }
+
+        if (choice == ONE)
+        {
+            node* temp_2 = (node*)malloc(sizeof(node));
+            node* mover = start;
+
+            if (temp_2 == NULL)
+            {
+                printf("\nUnable to allocate memory.");
+                return false;
+            }
+
+            /* last node */
+            temp_2->link = NULL;
+
+            /* taking in Data from user */
+            SDB_TakeData(temp_2);
+
+            /* will loop until finding last node whose link points to NULL value */
+            while (mover->link != NULL)
+            {
+                /* jump to next node */
+                mover = mover->link;
+            }
+
+            /* reassigning link of last node the new last node inserted */
+            mover->link = temp_2;
+            printf("\nSUCCESSFULLY INSERTED NODE AT THE END!\n");
+        }
+    }
+    return true;
+}
+
+/* deleting by ID */
+node* SDB_DeleteEntry (node* start, U16 data)
+{
+    node* temp;
+    node* ptr;
+
+    /* List is empty */
+    if(start == NULL)
+    {
+        printf("List is empty \n");
+        return start;
+    }
+
+    /* Case delete the first Node at the List */
+    if(start->ID == data)
+    {
+        temp  = start;
+        start = start->link;
+        free(temp);
+        temp = NULL;
+        return start;
+    }
+
+    /* Case delete in between the Nodes or at the end */
+    ptr = start;
+    while(ptr->link != NULL)
+    {
+        if(ptr->link->ID == data)
+        {
+            temp = ptr->link;
+            break;
+        }
+
+        ptr = ptr->link;
+    }
+
+    if(ptr->link == NULL)
+    {
+        printf("\nID (%d) is not in the found\n", data);
+    }
+
+    else
+    {
+        ptr->link = temp->link;
+        free(temp);
+        ptr = NULL;
+    }
+    return start;
 }
