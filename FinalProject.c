@@ -56,7 +56,6 @@ int main()
 }
 
 
-
 node* CreatSDB (node* start)
 {
     U16 entries;
@@ -113,6 +112,7 @@ node* CreatSDB (node* start)
     return start;
 }
 
+
 /* Taking Data from user */
 void SDB_TakeData (node* head)
 {
@@ -140,6 +140,7 @@ void SDB_TakeData (node* head)
     printf("Course 3 Grade: ");
     scanf("%f", &head->course3_grade);
 }
+
 
 /* checking if full list */
 bool SDB_IsFull (node* start)
@@ -176,6 +177,7 @@ bool SDB_IsFull (node* start)
     }
 }
 
+
 /**check if wanted to be as same as in the pdf**/
 /* Size of current list */
 U8 SDB_GetUsedSize (node* start)
@@ -199,6 +201,7 @@ U8 SDB_GetUsedSize (node* start)
     printf("\nNumber of entries left is: %d\n", MAX-counter);
     return counter;
 }
+
 
 /**check if wanted to be as same as in the pdf**/
 /* Inserting new entry */
@@ -253,7 +256,8 @@ bool SDB_AddEntry (node* start, U8 counter)
     return true;
 }
 
-/* deleting by ID */
+
+/* deleting by key */
 node* SDB_DeleteEntry (node* start, U16 data)
 {
     node* temp;
@@ -302,3 +306,6 @@ node* SDB_DeleteEntry (node* start, U16 data)
     }
     return start;
 }
+
+
+
