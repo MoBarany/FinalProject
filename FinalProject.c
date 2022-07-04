@@ -32,8 +32,8 @@ void SDB_TakeData(node* head);
 bool SDB_IsFull (node* start);
 U8 SDB_GetUsedSize (node* start);
 bool SDB_AddEntry (node* start, U8 counter);
-node* SDB_DeleteEntry (node* start, U16 data);
-
+node* SDB_DeleteEntry (node* start);
+bool SDB_ReadEntry (node* start);
 
 int main()
 {
@@ -44,14 +44,19 @@ int main()
     start = CreatSDB (start);
 
     /* list is full or not */
-    SDB_IsFull(start);
+    SDB_IsFull (start);
 
     /* Number of entries in the database */
-    counter = SDB_GetUsedSize(start);
+    counter = SDB_GetUsedSize (start);
 
     /* Inserting nodes */
     SDB_AddEntry (start, counter);
 
+    /* Deleting entry */
+    start = SDB_DeleteEntry (start);
+
+    /* Searching for entry */
+    SDB_ReadEntry (start);
     return false;
 }
 
@@ -219,7 +224,7 @@ bool SDB_AddEntry (node* start, U8 counter)
         /* user enters valid choice */
         while (choice != ONE && choice != ZERO)
         {
-            printf("\n PLEASE ENTER A VALID CHOICE!\n");
+            printf("\nPLEASE ENTER A VALID CHOICE!\n");
             printf("\nDo you want to add a new entry (1/0) ?: ");
             scanf("%d", &choice);
         }
@@ -258,54 +263,106 @@ bool SDB_AddEntry (node* start, U8 counter)
 
 
 /* deleting by key */
-node* SDB_DeleteEntry (node* start, U16 data)
+node* SDB_DeleteEntry (node* start)
 {
     node* temp;
     node* ptr;
+    U16 data;
+    U8 choice = ZERO;
 
-    /* List is empty */
-    if(start == NULL)
+    printf("Delete specific ID (1/0) ?: ");
+    scanf("%d", &choice);
+
+    while (choice != ONE && choice != ZERO)
     {
-        printf("List is empty \n");
-        return start;
+        printf("\nPLEASE ENTER A VALID CHOICE!\n");
+        printf("\nDelete specific ID (1/0) ?: ");
+        scanf("%d", &choice);
     }
 
-    /* Case delete the first Node at the List */
-    if(start->ID == data)
+    if (choice == ONE)
     {
-        temp  = start;
-        start = start->link;
-        free(temp);
-        temp = NULL;
-        return start;
-    }
+        printf("\n Enter ID to delete: ");
+        scanf("%d", &data);
 
-    /* Case delete in between the Nodes or at the end */
-    ptr = start;
-    while(ptr->link != NULL)
-    {
-        if(ptr->link->ID == data)
+        /* List is empty */
+        if(start == NULL)
         {
-            temp = ptr->link;
-            break;
+            printf("List is empty \n");
+            return start;
         }
 
-        ptr = ptr->link;
-    }
+        /* Case delete the first Node at the List */
+        if(start->ID == data)
+        {
+            temp  = start;
+            start = start->link;
+            free(temp);
+            temp = NULL;
+            return start;
+        }
 
-    if(ptr->link == NULL)
-    {
-        printf("\nID (%d) is not in the found\n", data);
-    }
+        /* Case delete in between the Nodes or at the end */
+        ptr = start;
+        while(ptr->link != NULL)
+        {
+            if(ptr->link->ID == data)
+            {
+                temp = ptr->link;
+                break;
+            }
 
-    else
-    {
-        ptr->link = temp->link;
-        free(temp);
-        ptr = NULL;
+            ptr = ptr->link;
+        }
+
+        if(ptr->link == NULL)
+        {
+            printf("\nID (%d) is not in the found\n", data);
+        }
+
+        else
+        {
+            ptr->link = temp->link;
+            free(temp);
+            ptr = NULL;
+        }
     }
     return start;
 }
 
+bool SDB_ReadEntry(node* start)
+{
+    node* mover = start;
+    U8 choice = ZERO;
+    U8 data;
 
+    printf("\nSearch for a specific ID (1/0) ?: ");
+    scanf("%d", &choice);
 
+    while (choice != ONE && choice != ZERO)
+    {
+        printf("\nPLEASE ENTER A VALID CHOICE!\n");
+        printf("\nSearch for a specific ID (1/0) ?: ");
+        scanf("%d", &choice);
+    }
+
+    if (choice == ONE)
+    {
+        printf("Enter ID to search: ");
+        scanf("%d", &data);
+
+        while (mover->link != NULL)
+        {
+
+            if(mover->ID == data)
+            {
+                printf("\nYour ID was found!");
+                return true;
+            }
+
+            mover = mover->link;
+        }
+    }
+    printf("\nYour ID was not found!");
+    return false;
+}
