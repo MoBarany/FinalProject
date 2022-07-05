@@ -64,7 +64,7 @@ int main()
     return false;
 }
 
-
+//* Creat list *//
 node* CreatSDB (node* start)
 {
     U16 entries;
@@ -122,7 +122,7 @@ node* CreatSDB (node* start)
 }
 
 /** there's a problem in float %f**/
-/* Taking Data from user */
+//* Taking Data from user *//
 void SDB_TakeData (node* head)
 {
     printf("\nStudent ID: ");
@@ -150,7 +150,7 @@ void SDB_TakeData (node* head)
     scanf("%hu", &head->course3_grade);
 }
 
-/* Printing Data */
+//* Printing Data *//
 void SDB_PrintData (node* head)
 {
     printf("\n%hu", head->year);
@@ -162,7 +162,7 @@ void SDB_PrintData (node* head)
     printf("\n%hu", head->course3_grade);
 }
 
-/* checking if full list */
+//* checking if full list *//
 bool SDB_IsFull (node* start)
 {
     node* mover = start;
@@ -199,7 +199,7 @@ bool SDB_IsFull (node* start)
 
 
 /**check if wanted to be as same as in the pdf**/
-/* Size of current list */
+//* Size of current list *//
 U8 SDB_GetUsedSize (node* start)
 {
     U8 counter = ONE;
@@ -224,7 +224,7 @@ U8 SDB_GetUsedSize (node* start)
 
 
 /**check if wanted to be as same as in the pdf**/
-/* Inserting new entry */
+//* Inserting new entry *//
 bool SDB_AddEntry (node* start, U8 counter)
 {
     U8 choice = ZERO;
@@ -270,13 +270,16 @@ bool SDB_AddEntry (node* start, U8 counter)
             /* reassigning link of last node the new last node inserted */
             mover->link = temp_2;
             printf("\nSUCCESSFULLY INSERTED NODE AT THE END!\n");
+
+            /* Prints new list */
+            SDB_GetIdList(start);
         }
     }
     return true;
 }
 
 
-/* deleting by key */
+//* deleting by key *//
 node* SDB_DeleteEntry (node* start)
 {
     node* temp;
@@ -296,7 +299,7 @@ node* SDB_DeleteEntry (node* start)
 
     if (choice == ONE)
     {
-        printf("\n Enter ID to delete: ");
+        printf("\nEnter ID to delete: ");
         scanf("%d", &data);
 
         /* List is empty */
@@ -313,6 +316,9 @@ node* SDB_DeleteEntry (node* start)
             start = start->link;
             free(temp);
             temp = NULL;
+            printf("DELETED SUCCESSFULLY!\n");
+            /* print new ID list */
+            SDB_GetIdList(start);
             return start;
         }
 
@@ -339,12 +345,15 @@ node* SDB_DeleteEntry (node* start)
             ptr->link = temp->link;
             free(temp);
             ptr = NULL;
+            printf("DELETED SUCCESSFULLY!\n");
+            /* print new ID list */
+            SDB_GetIdList(start);
         }
     }
     return start;
 }
 
-/* Finds an ID */
+//* Finds an ID *//
 bool SDB_ReadEntry(node* start)
 {
     static node* mover = NULL;
@@ -384,21 +393,21 @@ bool SDB_ReadEntry(node* start)
         return false;
     }
     return false;
-    }
+}
 
-/* Prints IDs in the list */
+//* Prints IDs in the list *//
 void SDB_GetIdList (node* start)
 {
     node* mover = NULL;
     mover = start;
-    U8 n = ONE;
+    U8 counter = ONE;
 
-    printf("\nCurrent IDs identified are:\n");
+    printf("\nCurrent IDs List is:\n");
 
     while (mover != NULL)
     {
-        printf("%d) %hu\n", n, mover->ID);
-        n++;
+        printf("%d) %hu\n", counter, mover->ID);
+        counter++;
         mover = mover->link;
     }
 }
