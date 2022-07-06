@@ -122,7 +122,7 @@ node* CreatSDB (node* start)
     return start;
 }
 
-
+/** there's a problem in float %f**/
 //* Taking Data from user *//
 void SDB_TakeData (node* head)
 {
