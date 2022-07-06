@@ -15,13 +15,13 @@ typedef struct SimpleDb
     U16 year;
 
     U16 course1_ID;
-    U16 course1_grade;
+    F32 course1_grade;
 
     U16 course2_ID;
-    U16 course2_grade;
+    F32 course2_grade;
 
     U16 course3_ID;
-    U16 course3_grade;
+    F32 course3_grade;
 
     struct SimpleDb *link; /*address of next*/
 } node;
@@ -35,6 +35,7 @@ bool SDB_AddEntry (node* start, U8 counter);
 node* SDB_DeleteEntry (node* start);
 bool SDB_ReadEntry (node* start);
 void SDB_GetIdList (node* start);
+bool SDB_IsIdExist (U16 data, node* start);
 
 int main()
 {
@@ -121,45 +122,65 @@ node* CreatSDB (node* start)
     return start;
 }
 
-/** there's a problem in float %f**/
+
 //* Taking Data from user *//
 void SDB_TakeData (node* head)
 {
     printf("\nStudent ID: ");
     scanf("%hu", &head->ID);
-
     printf("Student Year: ");
     scanf("%hu", &head->year);
 
+    /* Subjects */
     printf("Course 1 ID: ");
     scanf("%hu", &head->course1_ID);
-
-    printf("Course 1 Grade: ");
-    scanf("%hu", &head->course1_grade);
-
     printf("Course 2 ID: ");
     scanf("%hu", &head->course2_ID);
-
-    printf("Course 2 Grade: ");
-    scanf("%hu", &head->course2_grade);
-
     printf("Course 3 ID: ");
     scanf("%hu", &head->course3_ID);
 
+    /* Grades */
+    printf("Course 1 Grade: ");
+    scanf("%f", &head->course1_grade);
+    while (head->course1_grade < 0 ||
+            head->course1_grade > 100)
+    {
+        printf("\nENTER A VALID GRADE!");
+        printf("\nCourse 1 Grade: ");
+        scanf("%f", &head->course1_grade);
+    }
+
+    printf("Course 2 Grade: ");
+    scanf("%f", &head->course2_grade);
+    while (head->course2_grade < 0 ||
+            head->course2_grade > 100)
+    {
+        printf("\nENTER A VALID GRADE!");
+        printf("\nCourse 2 Grade: ");
+        scanf("%f", &head->course2_grade);
+    }
+
     printf("Course 3 Grade: ");
-    scanf("%hu", &head->course3_grade);
+    scanf("%f", &head->course3_grade);
+    while (head->course3_grade < 0 ||
+            head->course2_grade > 100)
+    {
+        printf("\nENTER A VALID GRADE!");
+        printf("\nCourse 3 Grade: ");
+        scanf("%f", &head->course3_grade);
+    }
 }
 
 //* Printing Data *//
 void SDB_PrintData (node* head)
 {
-    printf("\n%hu", head->year);
-    printf("\n%hu", head->course1_ID);
-    printf("\n%hu", head->course1_grade);
-    printf("\n%hu", head->course2_ID);
-    printf("\n%hu", head->course2_grade);
-    printf("\n%hu", head->course3_ID);
-    printf("\n%hu", head->course3_grade);
+    printf("\nStudent Year: %hu", head->year);
+    printf("\nSubject 1 ID: %hu", head->course1_ID);
+    printf("\nSubject 2 ID: %hu", head->course2_ID);
+    printf("\nSubject 3 ID: %hu", head->course3_ID);
+    printf("\nSubject 1 grade: %f", head->course1_grade);
+    printf("\nSubject 2 grade: %f", head->course2_grade);
+    printf("\nSubject 3 grade: %f\n", head->course3_grade);
 }
 
 //* checking if full list *//
@@ -198,7 +219,6 @@ bool SDB_IsFull (node* start)
 }
 
 
-/**check if wanted to be as same as in the pdf**/
 //* Size of current list *//
 U8 SDB_GetUsedSize (node* start)
 {
@@ -223,7 +243,6 @@ U8 SDB_GetUsedSize (node* start)
 }
 
 
-/**check if wanted to be as same as in the pdf**/
 //* Inserting new entry *//
 bool SDB_AddEntry (node* start, U8 counter)
 {
@@ -269,7 +288,7 @@ bool SDB_AddEntry (node* start, U8 counter)
 
             /* reassigning link of last node the new last node inserted */
             mover->link = temp_2;
-            printf("\nSUCCESSFULLY INSERTED NODE AT THE END!\n");
+            printf("\nSUCCESSFULLY ADDED ENTRY!\n");
 
             /* Prints new list */
             SDB_GetIdList(start);
@@ -353,6 +372,7 @@ node* SDB_DeleteEntry (node* start)
     return start;
 }
 
+
 //* Finds an ID *//
 bool SDB_ReadEntry(node* start)
 {
@@ -378,22 +398,24 @@ bool SDB_ReadEntry(node* start)
 
         while (mover != NULL)
         {
-            if(mover->ID == data)
+            /* checking existence of ID */
+            if (SDB_IsIdExist (data, mover))
             {
-                printf("Your ID was found!");
-
-                /* Prints details of ID */
+                /* if found */
+                printf("\nID WAS FOUND!\n");
+                printf("\nID details:");
                 SDB_PrintData (mover);
                 return true;
             }
             mover = mover->link;
         }
         /* If not found */
-        printf("\nYour ID was not found!");
+        printf("\nID WAS NOT FOUND!\n");
         return false;
     }
     return false;
 }
+
 
 //* Prints IDs in the list *//
 void SDB_GetIdList (node* start)
@@ -410,4 +432,16 @@ void SDB_GetIdList (node* start)
         counter++;
         mover = mover->link;
     }
+}
+
+
+//* checks if ID exists *//
+bool SDB_IsIdExist (U16 data, node* mover)
+{
+
+    if(mover->ID == data)
+    {
+        return true; /* exists */
+    }
+    return false;
 }
