@@ -11,16 +11,16 @@
 /* creating Structure */
 typedef struct SimpleDb
 {
-    U16 ID;
-    U16 year;
+    U8 ID;
+    U8 year;
 
-    U16 course1_ID;
+    U8 course1_ID;
     F32 course1_grade;
 
-    U16 course2_ID;
+    U8 course2_ID;
     F32 course2_grade;
 
-    U16 course3_ID;
+    U8 course3_ID;
     F32 course3_grade;
 
     struct SimpleDb *link; /*address of next*/
@@ -35,7 +35,7 @@ bool SDB_AddEntry (node* start, U8 counter);
 node* SDB_DeleteEntry (node* start);
 bool SDB_ReadEntry (node* start);
 void SDB_GetIdList (node* start);
-bool SDB_IsIdExist (U16 data, node* start);
+bool SDB_IsIdExist (U8 data, node* start);
 
 int main()
 {
@@ -68,21 +68,6 @@ int main()
 //* Creat list *//
 node* CreatSDB (node* start)
 {
-    U16 entries;
-    U8 counter = ZERO;
-    node* temp;
-
-    printf("Enter number of entries: ");
-    scanf("%hu", &entries);
-
-    /* making sure user enters a number > zero */
-    while(entries == ZERO)
-    {
-        printf("\nPLEASE ENTER A VALID NUMBER OF ENTRIES!\n");
-        printf("Enter number of entries: ");
-        scanf("%hu", &entries);
-    }
-
     /* first node */
     node* head = (node*)malloc(sizeof(node));
 
@@ -98,46 +83,25 @@ node* CreatSDB (node* start)
 
     start = head;
     head->link = NULL;
-
-    /* creating n-1 numbers of nodes as read from user using temp.
-    for loop will start from 2nd node because we already made 1st ONE.*/
-    for (counter = TWO; counter <= entries; ++counter)
-    {
-        /* new node */
-        temp = (node*)malloc(sizeof(node));
-
-        /* list is empty */
-        if (temp == NULL)
-        {
-            printf("\nUnable to allocate memory");
-            break;
-        }
-        /* Take Data */
-        SDB_TakeData(temp);
-
-        temp->link = NULL;
-        head->link = temp;
-        head = head->link;
-    }
     return start;
 }
 
-/** there's a problem in float %f**/
-//* Taking Data from user *//
+
+/* Taking Data from user */
 void SDB_TakeData (node* head)
 {
-    printf("\nStudent ID: ");
-    scanf("%hu", &head->ID);
+    printf("Student ID: ");
+    scanf(" %c", &head->ID);
     printf("Student Year: ");
-    scanf("%hu", &head->year);
+    scanf(" %c", &head->year);
 
     /* Subjects */
     printf("Course 1 ID: ");
-    scanf("%hu", &head->course1_ID);
+    scanf(" %c", &head->course1_ID);
     printf("Course 2 ID: ");
-    scanf("%hu", &head->course2_ID);
+    scanf(" %c", &head->course2_ID);
     printf("Course 3 ID: ");
-    scanf("%hu", &head->course3_ID);
+    scanf(" %c", &head->course3_ID);
 
     /* Grades */
     printf("Course 1 Grade: ");
@@ -171,13 +135,13 @@ void SDB_TakeData (node* head)
     }
 }
 
-//* Printing Data *//
+/* Printing Data */
 void SDB_PrintData (node* head)
 {
-    printf("\nStudent Year: %hu", head->year);
-    printf("\nSubject 1 ID: %hu", head->course1_ID);
-    printf("\nSubject 2 ID: %hu", head->course2_ID);
-    printf("\nSubject 3 ID: %hu", head->course3_ID);
+    printf("\nStudent Year: %c", head->year);
+    printf("\nSubject 1 ID: %c", head->course1_ID);
+    printf("\nSubject 2 ID: %c", head->course2_ID);
+    printf("\nSubject 3 ID: %c", head->course3_ID);
     printf("\nSubject 1 grade: %f", head->course1_grade);
     printf("\nSubject 2 grade: %f", head->course2_grade);
     printf("\nSubject 3 grade: %f\n", head->course3_grade);
@@ -252,14 +216,14 @@ bool SDB_AddEntry (node* start, U8 counter)
     if (counter != MAX)
     {
         printf("\nDo you want to add a new entry (1/0) ?: ");
-        scanf("%d", &choice);
+        scanf(" %c", &choice);
 
         /* user enters valid choice */
         while (choice != ONE && choice != ZERO)
         {
             printf("\nPLEASE ENTER A VALID CHOICE!");
             printf("\nDo you want to add a new entry (1/0) ?: ");
-            scanf("%d", &choice);
+            scanf(" %c", &choice);
         }
 
         if (choice == ONE)
@@ -269,7 +233,7 @@ bool SDB_AddEntry (node* start, U8 counter)
 
             if (temp_2 == NULL)
             {
-                printf("\nUnable to allocate memory.");
+                printf("\nUNABLE TO ALLOCATE MEMORY!");
                 return false;
             }
 
@@ -303,23 +267,23 @@ node* SDB_DeleteEntry (node* start)
 {
     node* temp;
     node* ptr;
-    U16 data;
+    U8 data;
     U8 choice = ZERO;
 
     printf("\nDelete specific ID (1/0) ?: ");
-    scanf("%d", &choice);
+    scanf(" %c", &choice);
 
     while (choice != ONE && choice != ZERO)
     {
         printf("\nPLEASE ENTER A VALID CHOICE!");
         printf("\nDelete specific ID (1/0) ?: ");
-        scanf("%d", &choice);
+        scanf(" %c", &choice);
     }
 
     if (choice == ONE)
     {
         printf("\nEnter ID to delete: ");
-        scanf("%d", &data);
+        scanf(" %c", &data);
 
         /* List is empty */
         if(start == NULL)
@@ -382,19 +346,19 @@ bool SDB_ReadEntry(node* start)
     U8 data;
 
     printf("\nSearch for a specific ID (1/0) ?: ");
-    scanf("%d", &choice);
+    scanf(" %c", &choice);
 
     while (choice != ONE && choice != ZERO)
     {
         printf("\nPLEASE ENTER A VALID CHOICE!");
         printf("\nSearch for a specific ID (1/0) ?: ");
-        scanf("%d", &choice);
+        scanf(" %c", &choice);
     }
 
     if (choice == ONE)
     {
         printf("Enter ID to search: ");
-        scanf("%d", &data);
+        scanf(" %c", &data);
 
         while (mover != NULL)
         {
@@ -404,7 +368,9 @@ bool SDB_ReadEntry(node* start)
                 /* if found */
                 printf("\nID WAS FOUND!\n");
                 printf("\nID details:");
+                /*print contents of id */
                 SDB_PrintData (mover);
+
                 return true;
             }
             mover = mover->link;
@@ -428,7 +394,7 @@ void SDB_GetIdList (node* start)
 
     while (mover != NULL)
     {
-        printf("%d) %hu\n", counter, mover->ID);
+        printf("%c) %c\n", counter, mover->ID);
         counter++;
         mover = mover->link;
     }
@@ -436,9 +402,8 @@ void SDB_GetIdList (node* start)
 
 
 //* checks if ID exists *//
-bool SDB_IsIdExist (U16 data, node* mover)
+bool SDB_IsIdExist (U8 data, node* mover)
 {
-
     if(mover->ID == data)
     {
         return true; /* exists */
