@@ -37,7 +37,9 @@ bool SDB_ReadEntry (node* start);
 void SDB_GetIdList (node* start);
 bool SDB_IsIdExist (U8 data, node* start);
 
-int main()
+
+/** MASSIVE PROBLEM WITH %C stuff **/
+void main()
 {
     node* start = NULL;
     U8 counter =  ZERO;
@@ -59,10 +61,8 @@ int main()
 
     /* Searching for entry */
     SDB_ReadEntry (start);
-
-    /* Prints IDs in the list */
-    SDB_GetIdList (start);
-    return false;
+    printf("\nTERMINATED SUCCESSFULLY!");
+	getch();
 }
 
 //* Creat list *//
@@ -91,17 +91,17 @@ node* CreatSDB (node* start)
 void SDB_TakeData (node* head)
 {
     printf("Student ID: ");
-    scanf(" %c", &head->ID);
+    scanf("%d", &head->ID);
     printf("Student Year: ");
-    scanf(" %c", &head->year);
+    scanf("%d", &head->year);
 
     /* Subjects */
     printf("Course 1 ID: ");
-    scanf(" %c", &head->course1_ID);
+    scanf("%d", &head->course1_ID);
     printf("Course 2 ID: ");
-    scanf(" %c", &head->course2_ID);
+    scanf("%d", &head->course2_ID);
     printf("Course 3 ID: ");
-    scanf(" %c", &head->course3_ID);
+    scanf("%d", &head->course3_ID);
 
     /* Grades */
     printf("Course 1 Grade: ");
@@ -138,10 +138,10 @@ void SDB_TakeData (node* head)
 /* Printing Data */
 void SDB_PrintData (node* head)
 {
-    printf("\nStudent Year: %c", head->year);
-    printf("\nSubject 1 ID: %c", head->course1_ID);
-    printf("\nSubject 2 ID: %c", head->course2_ID);
-    printf("\nSubject 3 ID: %c", head->course3_ID);
+    printf("\nStudent Year: %d", head->year);
+    printf("\nSubject 1 ID: %d", head->course1_ID);
+    printf("\nSubject 2 ID: %d", head->course2_ID);
+    printf("\nSubject 3 ID: %d", head->course3_ID);
     printf("\nSubject 1 grade: %f", head->course1_grade);
     printf("\nSubject 2 grade: %f", head->course2_grade);
     printf("\nSubject 3 grade: %f\n", head->course3_grade);
@@ -151,7 +151,7 @@ void SDB_PrintData (node* head)
 bool SDB_IsFull (node* start)
 {
     node* mover = start;
-    U8 counter = ONE;
+    U16 counter = ONE;
 
     /* returning false in case empty list */
     if (mover == NULL)
@@ -186,7 +186,7 @@ bool SDB_IsFull (node* start)
 //* Size of current list *//
 U8 SDB_GetUsedSize (node* start)
 {
-    U8 counter = ONE;
+    U16 counter = ONE;
     node* mover = start;
 
     if (mover == NULL)
@@ -210,20 +210,20 @@ U8 SDB_GetUsedSize (node* start)
 //* Inserting new entry *//
 bool SDB_AddEntry (node* start, U8 counter)
 {
-    U8 choice = ZERO;
+    U16 choice = ZERO;
 
     /* checking if there's a free space */
     if (counter != MAX)
     {
         printf("\nDo you want to add a new entry (1/0) ?: ");
-        scanf(" %c", &choice);
+        scanf("%hu", &choice);
 
         /* user enters valid choice */
         while (choice != ONE && choice != ZERO)
         {
             printf("\nPLEASE ENTER A VALID CHOICE!");
             printf("\nDo you want to add a new entry (1/0) ?: ");
-            scanf(" %c", &choice);
+            scanf("%hu", &choice);
         }
 
         if (choice == ONE)
@@ -268,22 +268,22 @@ node* SDB_DeleteEntry (node* start)
     node* temp;
     node* ptr;
     U8 data;
-    U8 choice = ZERO;
+    U16 choice = ZERO;
 
     printf("\nDelete specific ID (1/0) ?: ");
-    scanf(" %c", &choice);
+    scanf("%hu", &choice);
 
     while (choice != ONE && choice != ZERO)
     {
         printf("\nPLEASE ENTER A VALID CHOICE!");
         printf("\nDelete specific ID (1/0) ?: ");
-        scanf(" %c", &choice);
+        scanf("%hu", &choice);
     }
 
     if (choice == ONE)
     {
         printf("\nEnter ID to delete: ");
-        scanf(" %c", &data);
+        scanf("%d", &data);
 
         /* List is empty */
         if(start == NULL)
@@ -342,23 +342,23 @@ bool SDB_ReadEntry(node* start)
 {
     static node* mover = NULL;
     mover = start;
-    U8 choice = ZERO;
+    U16 choice = ZERO;
     U8 data;
 
     printf("\nSearch for a specific ID (1/0) ?: ");
-    scanf(" %c", &choice);
+    scanf("%hu", &choice);
 
     while (choice != ONE && choice != ZERO)
     {
         printf("\nPLEASE ENTER A VALID CHOICE!");
         printf("\nSearch for a specific ID (1/0) ?: ");
-        scanf(" %c", &choice);
+        scanf("%hu", &choice);
     }
 
     if (choice == ONE)
     {
         printf("Enter ID to search: ");
-        scanf(" %c", &data);
+        scanf("%d", &data);
 
         while (mover != NULL)
         {
@@ -394,7 +394,7 @@ void SDB_GetIdList (node* start)
 
     while (mover != NULL)
     {
-        printf("%c) %c\n", counter, mover->ID);
+        printf("%d) %d\n", counter, mover->ID);
         counter++;
         mover = mover->link;
     }
