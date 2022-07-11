@@ -3,10 +3,12 @@
 #include <stdbool.h>
 #include "Type_Def.h"
 
-#define ZERO 0
-#define ONE  1
-#define TWO  2
-#define MAX  10
+#define N_ONE -1
+#define ZERO   0
+#define ONE    1
+#define TWO    2
+#define MAX    10
+
 
 /* creating Structure */
 typedef struct SimpleDb
@@ -37,13 +39,12 @@ bool SDB_ReadEntry (node* start);
 void SDB_GetIdList (node* start);
 bool SDB_IsIdExist (U8 data, node* start);
 
-
-/** MASSIVE PROBLEM WITH %C stuff **/
 void main()
 {
     node* start = NULL;
     U8 counter =  ZERO;
 
+    printf("Enter the following data.\n");
     /* creating list & saving pointer of first item in start */
     start = CreatSDB (start);
 
@@ -60,10 +61,14 @@ void main()
     start = SDB_DeleteEntry (start);
 
     /* Searching for entry */
-    SDB_ReadEntry (start);
-    printf("\nTERMINATED SUCCESSFULLY!");
-	getch();
+    if (SDB_ReadEntry (start))
+    {
+
+    }
+    printf("\nTERMINATED SUCCESSFULLY!\n");
+    getch();
 }
+
 
 //* Creat list *//
 node* CreatSDB (node* start)
@@ -127,13 +132,14 @@ void SDB_TakeData (node* head)
     printf("Course 3 Grade: ");
     scanf("%f", &head->course3_grade);
     while (head->course3_grade < 0 ||
-            head->course2_grade > 100)
+            head->course3_grade > 100)
     {
         printf("\nENTER A VALID GRADE!");
         printf("\nCourse 3 Grade: ");
         scanf("%f", &head->course3_grade);
     }
 }
+
 
 /* Printing Data */
 void SDB_PrintData (node* head)
@@ -147,18 +153,12 @@ void SDB_PrintData (node* head)
     printf("\nSubject 3 grade: %f\n", head->course3_grade);
 }
 
+
 //* checking if full list *//
 bool SDB_IsFull (node* start)
 {
     node* mover = start;
     U16 counter = ONE;
-
-    /* returning false in case empty list */
-    if (mover == NULL)
-    {
-        printf("\n\nLIST IS EMPTY!\n");
-        return false;
-    }
 
     /* counting number of entries */
     while (mover->link != NULL)
@@ -201,7 +201,7 @@ U8 SDB_GetUsedSize (node* start)
         counter ++;
     }
 
-    printf("\nCurrent number of entries in the data base is: %d\n", counter);
+    printf("\nCurrent number of entries: %d\n", counter);
     printf("Number of entries left is: %d\n", MAX-counter);
     return counter;
 }
@@ -368,6 +368,7 @@ bool SDB_ReadEntry(node* start)
                 /* if found */
                 printf("\nID WAS FOUND!\n");
                 printf("\nID details:");
+
                 /*print contents of id */
                 SDB_PrintData (mover);
 
@@ -379,7 +380,7 @@ bool SDB_ReadEntry(node* start)
         printf("\nID WAS NOT FOUND!\n");
         return false;
     }
-    return false;
+    return N_ONE;
 }
 
 
