@@ -24,6 +24,7 @@ typedef struct SimpleDb
     U8 course3_ID;
     F32 course3_grade;
 
+
     struct SimpleDb *link; /*address of next*/
 } node;
 
@@ -62,7 +63,7 @@ void main()
     while (checker == ONE)
     {
         printf("\nChoose operation:\n");
-        printf("1) Add new entry.\n2) Delete entry.\n3) Search for entry.\n4) Exit program.\n");
+        printf("1) Add new entry.\n2) Delete entry.\n3) Search for entry.\n4) View current IDs list.\n5) Exit program.\n");
         printf("\nChoice: ");
         scanf("%hu", &choice);
         printf("\n");
@@ -80,38 +81,42 @@ void main()
             /* Number of entries in the database */
             U8 counter = SDB_GetUsedSize (start);
 
-            /* Prints new IDs in list */
-            SDB_GetIdList(start);
             printf("\nPress any button to continue...\n");
             getch();
             break;
-
 
         case 2:
             /* Deleting entry */
             start = SDB_DeleteEntry (start);
 
-            /* Prints new IDs in list */
-            SDB_GetIdList(start);
             printf("\nPress any button to continue...\n");
             getch();
             break;
 
-
         case 3:
             /* Searching for entry */
             SDB_ReadEntry (start);
+
+            printf("\nPress any button to continue...\n");
+            getch();
+            break;
+
+        case 4:
+            /* Prints new IDs in list */
+            SDB_GetIdList(start);
+
             printf("\nPress any button to continue...\n");
             getch();
             break;
 
         default:
+            /* exiting program */
             checker = ZERO;
             break;
 
         }
     }
-    printf("\nTERMINATED SUCCESSFULLY!");
+    printf("TERMINATED SUCCESSFULLY!");
     getch();
 }
 
@@ -389,7 +394,7 @@ void SDB_GetIdList (node* start)
     node* mover = start;
     U8 counter  = ONE;
 
-    printf("\nCurrent IDs List is:\n");
+    printf("Current IDs List is:\n");
 
     while (mover != NULL)
     {
