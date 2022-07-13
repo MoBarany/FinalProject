@@ -3,7 +3,6 @@
 #include <stdbool.h>
 #include "Type_Def.h"
 
-#define N_ONE -1
 #define ZERO   0
 #define ONE    1
 #define TWO    2
@@ -29,46 +28,92 @@ typedef struct SimpleDb
 } node;
 
 //prototypes
-node* CreatSDB (node* start);
-void SDB_TakeData(node* head);
-bool SDB_IsFull (node* start);
-U8 SDB_GetUsedSize (node* start);
-bool SDB_AddEntry (node* start, U8 counter);
+node* CreatSDB        (node* start);
+
+void SDB_TakeData     (node* head);
+
+bool SDB_IsFull       (node* start);
+
+U8 SDB_GetUsedSize    (node* start);
+
+bool SDB_AddEntry     (node* start);
+
 node* SDB_DeleteEntry (node* start);
-bool SDB_ReadEntry (node* start);
-void SDB_GetIdList (node* start);
-bool SDB_IsIdExist (U8 data, node* start);
+
+bool SDB_ReadEntry    (node* start);
+
+void SDB_GetIdList    (node* start);
+
+bool SDB_IsIdExist    (U8 data, node* start);
+
 
 void main()
 {
     node* start = NULL;
-    U8 counter =  ZERO;
+    U8 counter  = ZERO;
+    U16 checker = ONE;
+    U16 choice  = ONE;
 
     printf("Enter the following data.\n");
+
     /* creating list & saving pointer of first item in start */
     start = CreatSDB (start);
 
-    /* list is full or not */
-    SDB_IsFull (start);
-
-    /* Number of entries in the database */
-    counter = SDB_GetUsedSize (start);
-
-    /* Inserting nodes */
-    SDB_AddEntry (start, counter);
-
-    /* Deleting entry */
-    start = SDB_DeleteEntry (start);
-
-    /* Searching for entry */
-    if (SDB_ReadEntry (start))
+    while (checker == ONE)
     {
+        printf("\nChoose operation:\n");
+        printf("1) Add new entry.\n2) Delete entry.\n3) Search for entry.\n4) Exit program.\n");
+        printf("\nChoice: ");
+        scanf("%hu", &choice);
+        printf("\n");
 
+        switch (choice)
+        {
+
+        case 1:
+            /* inserting entry */
+            SDB_AddEntry(start);
+
+            /* list is full or not */
+            SDB_IsFull (start);
+
+            /* Number of entries in the database */
+            U8 counter = SDB_GetUsedSize (start);
+
+            /* Prints new IDs in list */
+            SDB_GetIdList(start);
+            printf("\nPress any button to continue...\n");
+            getch();
+            break;
+
+
+        case 2:
+            /* Deleting entry */
+            start = SDB_DeleteEntry (start);
+
+            /* Prints new IDs in list */
+            SDB_GetIdList(start);
+            printf("\nPress any button to continue...\n");
+            getch();
+            break;
+
+
+        case 3:
+            /* Searching for entry */
+            SDB_ReadEntry (start);
+            printf("\nPress any button to continue...\n");
+            getch();
+            break;
+
+        default:
+            checker = ZERO;
+            break;
+
+        }
     }
-    printf("\nTERMINATED SUCCESSFULLY!\n");
+    printf("\nTERMINATED SUCCESSFULLY!");
     getch();
 }
-
 
 //* Creat list *//
 node* CreatSDB (node* start)
@@ -92,7 +137,7 @@ node* CreatSDB (node* start)
 }
 
 
-/* Taking Data from user */
+//* Taking Data from user *//
 void SDB_TakeData (node* head)
 {
     printf("Student ID: ");
@@ -140,7 +185,6 @@ void SDB_TakeData (node* head)
     }
 }
 
-
 /* Printing Data */
 void SDB_PrintData (node* head)
 {
@@ -152,7 +196,6 @@ void SDB_PrintData (node* head)
     printf("\nSubject 2 grade: %f", head->course2_grade);
     printf("\nSubject 3 grade: %f\n", head->course3_grade);
 }
-
 
 //* checking if full list *//
 bool SDB_IsFull (node* start)
@@ -170,14 +213,12 @@ bool SDB_IsFull (node* start)
     /* if list is full */
     if (counter == MAX)
     {
-        printf("\n\nLIST IS FULL!\n");
         return true;
     }
 
     /* if list not full */
     else
     {
-        printf("\n\nLIST IS NOT FULL!");
         return false;
     }
 }
@@ -201,64 +242,51 @@ U8 SDB_GetUsedSize (node* start)
         counter ++;
     }
 
-    printf("\nCurrent number of entries: %d\n", counter);
+    printf("\nNumber of entries is: %d\n", counter);
     printf("Number of entries left is: %d\n", MAX-counter);
     return counter;
 }
 
 
 //* Inserting new entry *//
-bool SDB_AddEntry (node* start, U8 counter)
+bool SDB_AddEntry (node* start)
 {
-    U16 choice = ZERO;
-
-    /* checking if there's a free space */
-    if (counter != MAX)
+    /* If list is not full */
+    if (SDB_IsFull(start) == false)
     {
-        printf("\nDo you want to add a new entry (1/0) ?: ");
-        scanf("%hu", &choice);
+        node* temp_2 = (node*)malloc(sizeof(node));
+        node* mover = start;
 
-        /* user enters valid choice */
-        while (choice != ONE && choice != ZERO)
+        if (temp_2 == NULL)
         {
-            printf("\nPLEASE ENTER A VALID CHOICE!");
-            printf("\nDo you want to add a new entry (1/0) ?: ");
-            scanf("%hu", &choice);
+            printf("\nUNABLE TO ALLOCATE MEMORY!");
+            return false;
         }
 
-        if (choice == ONE)
+        printf("Enter the following data.\n");
+
+        /* last node */
+        temp_2->link = NULL;
+
+        /* taking in Data from user */
+        SDB_TakeData(temp_2);
+
+        /* will loop until finding last node whose link points to NULL value */
+        while (mover->link != NULL)
         {
-            node* temp_2 = (node*)malloc(sizeof(node));
-            node* mover = start;
-
-            if (temp_2 == NULL)
-            {
-                printf("\nUNABLE TO ALLOCATE MEMORY!");
-                return false;
-            }
-
-            /* last node */
-            temp_2->link = NULL;
-
-            /* taking in Data from user */
-            SDB_TakeData(temp_2);
-
-            /* will loop until finding last node whose link points to NULL value */
-            while (mover->link != NULL)
-            {
-                /* jump to next node */
-                mover = mover->link;
-            }
-
-            /* reassigning link of last node the new last node inserted */
-            mover->link = temp_2;
-            printf("\nSUCCESSFULLY ADDED ENTRY!\n");
-
-            /* Prints new list */
-            SDB_GetIdList(start);
+            /* jump to next node */
+            mover = mover->link;
         }
+
+        /* reassigning link of last node the new last node inserted */
+        mover->link = temp_2;
+
+        printf("\nSUCCESSFULLY ADDED ENTRY!\n");
+        return true;
     }
-    return true;
+    /* If there list is full */
+    printf("\n\nCAN NOT ADD MORE ENTRIES, LIST IS FULL!\n");
+    return false;
 }
 
 
@@ -268,70 +296,56 @@ node* SDB_DeleteEntry (node* start)
     node* temp;
     node* ptr;
     U8 data;
-    U16 choice = ZERO;
 
-    printf("\nDelete specific ID (1/0) ?: ");
-    scanf("%hu", &choice);
+    printf("\nEnter ID to delete: ");
+    scanf("%d", &data);
 
-    while (choice != ONE && choice != ZERO)
+    /* List is empty */
+    if(start == NULL)
     {
-        printf("\nPLEASE ENTER A VALID CHOICE!");
-        printf("\nDelete specific ID (1/0) ?: ");
-        scanf("%hu", &choice);
+        printf("LIST IS EMPTY!\n");
+        return start;
     }
 
-    if (choice == ONE)
+    /* Case delete the first Node at the List */
+    if(start->ID == data)
     {
-        printf("\nEnter ID to delete: ");
-        scanf("%d", &data);
+        temp  = start;
+        start = start->link;
+        free(temp);
+        temp = NULL;
+        printf("DELETED SUCCESSFULLY!\n");
+        /* print new ID list */
+        SDB_GetIdList(start);
+        return start;
+    }
 
-        /* List is empty */
-        if(start == NULL)
+    /* Case delete in between the Nodes or at the end */
+    ptr = start;
+    while(ptr->link != NULL)
+    {
+        if(ptr->link->ID == data)
         {
-            printf("List is empty \n");
-            return start;
+            temp = ptr->link;
+            break;
         }
 
-        /* Case delete the first Node at the List */
-        if(start->ID == data)
-        {
-            temp  = start;
-            start = start->link;
-            free(temp);
-            temp = NULL;
-            printf("DELETED SUCCESSFULLY!\n");
-            /* print new ID list */
-            SDB_GetIdList(start);
-            return start;
-        }
+        ptr = ptr->link;
+    }
 
-        /* Case delete in between the Nodes or at the end */
-        ptr = start;
-        while(ptr->link != NULL)
-        {
-            if(ptr->link->ID == data)
-            {
-                temp = ptr->link;
-                break;
-            }
+    /*if ID is not found */
+    if(ptr->link == NULL)
+    {
+        printf("\nID (%d) IS NOT FOUND!", data);
+    }
 
-            ptr = ptr->link;
-        }
+    else
+    {
+        ptr->link = temp->link;
+        free(temp);
+        ptr = NULL;
 
-        if(ptr->link == NULL)
-        {
-            printf("\nID (%d) is not in the found", data);
-        }
-
-        else
-        {
-            ptr->link = temp->link;
-            free(temp);
-            ptr = NULL;
-            printf("DELETED SUCCESSFULLY!\n");
-            /* print new ID list */
-            SDB_GetIdList(start);
-        }
+        printf("DELETED SUCCESSFULLY!\n");
     }
     return start;
 }
@@ -342,54 +356,38 @@ bool SDB_ReadEntry(node* start)
 {
     static node* mover = NULL;
     mover = start;
-    U16 choice = ZERO;
     U8 data;
 
-    printf("\nSearch for a specific ID (1/0) ?: ");
-    scanf("%hu", &choice);
+    printf("Enter ID to search: ");
+    scanf("%d", &data);
 
-    while (choice != ONE && choice != ZERO)
+    while (mover != NULL)
     {
-        printf("\nPLEASE ENTER A VALID CHOICE!");
-        printf("\nSearch for a specific ID (1/0) ?: ");
-        scanf("%hu", &choice);
-    }
-
-    if (choice == ONE)
-    {
-        printf("Enter ID to search: ");
-        scanf("%d", &data);
-
-        while (mover != NULL)
+        /* checking existence of ID */
+        if (SDB_IsIdExist (data, mover))
         {
-            /* checking existence of ID */
-            if (SDB_IsIdExist (data, mover))
-            {
-                /* if found */
-                printf("\nID WAS FOUND!\n");
-                printf("\nID details:");
+            /* if found */
+            printf("\nID WAS FOUND!\n");
+            printf("\nID details:");
 
-                /*print contents of id */
-                SDB_PrintData (mover);
+            /*print contents of id */
+            SDB_PrintData (mover);
 
-                return true;
-            }
-            mover = mover->link;
+            return true;
         }
-        /* If not found */
-        printf("\nID WAS NOT FOUND!\n");
-        return false;
+        mover = mover->link;
     }
-    return N_ONE;
+    /* If not found */
+    printf("\nID WAS NOT FOUND!\n");
+    return false;
 }
 
 
 //* Prints IDs in the list *//
 void SDB_GetIdList (node* start)
 {
-    node* mover = NULL;
-    mover = start;
-    U8 counter = ONE;
+    node* mover = start;
+    U8 counter  = ONE;
 
     printf("\nCurrent IDs List is:\n");
 
